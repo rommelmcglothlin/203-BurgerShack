@@ -24,17 +24,23 @@ namespace BurgerShack.Services
 
     public Burger EditBurger(Burger burgerData)
     {
-      var burger = _repo.Burgers.Find(b => b.Id == burgerData.Id);
-      if (burger == null) { throw new Exception("I DONT LIKE BAD ID's"); }
+      var burger = GetBurgerById(burgerData.Id);
       burger.Name = burgerData.Name;
       burger.Description = burgerData.Description;
       burger.Price = burgerData.Price;
       return burger;
     }
 
-    public Burger DeleteBurger(string id){
+    public Burger GetBurgerById(string id)
+    {
       var burger = _repo.Burgers.Find(b => b.Id == id);
       if (burger == null) { throw new Exception("I DONT LIKE BAD ID's"); }
+      return burger;
+    }
+
+    public Burger DeleteBurger(string id)
+    {
+      var burger = GetBurgerById(id);
       _repo.Burgers.Remove(burger);
       return burger;
     }

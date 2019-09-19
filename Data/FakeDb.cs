@@ -8,6 +8,7 @@ namespace BurgerShack.Data
     public List<Burger> Burgers { get; set; } = new List<Burger>();
     public List<Drink> Drinks { get; set; } = new List<Drink>();
     public List<Side> Sides { get; set; } = new List<Side>();
+    public List<Order> Orders {get; set;} = new List<Order>();
 
   }
 }
