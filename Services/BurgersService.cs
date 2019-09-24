@@ -8,17 +8,18 @@ namespace BurgerShack.Services
 {
   public class BurgersService
   {
-    private readonly FakeDb _repo;
+    private readonly FakeDb _fakeRepo;
+    private BurgersRepository _repo;
 
     public Burger AddBurger(Burger burgerData)
     {
-      var exists = _repo.Burgers.Find(b => b.Name == burgerData.Name);
+      var exists = _repo.GetAll().ToList().Find(b => b.Name == burgerData.Name);
       if (exists != null)
       {
         throw new Exception("This burger already exists.");
       }
       burgerData.Id = Guid.NewGuid().ToString();
-      _repo.Burgers.Add(burgerData);
+      _repo.Create(burgerData);
       return burgerData;
     }
 
@@ -33,7 +34,7 @@ namespace BurgerShack.Services
 
     public Burger GetBurgerById(string id)
     {
-      var burger = _repo.Burgers.Find(b => b.Id == id);
+      var burger = _fakeRepo.Burgers.Find(b => b.Id == id);
       if (burger == null) { throw new Exception("I DONT LIKE BAD ID's"); }
       return burger;
     }
@@ -41,17 +42,18 @@ namespace BurgerShack.Services
     public Burger DeleteBurger(string id)
     {
       var burger = GetBurgerById(id);
-      _repo.Burgers.Remove(burger);
+      _fakeRepo.Burgers.Remove(burger);
       return burger;
     }
 
     public List<Burger> GetBurgers()
     {
-      return _repo.Burgers;
+      return _repo.GetAll().ToList();
     }
 
-    public BurgersService(FakeDb repo)
+    public BurgersService(FakeDb fakeRepo, BurgersRepository repo)
     {
+      _fakeRepo = fakeRepo;
       _repo = repo;
     }
   }
