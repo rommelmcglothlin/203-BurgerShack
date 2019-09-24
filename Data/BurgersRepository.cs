@@ -11,11 +11,10 @@ namespace BurgerShack.Data
 
     public Burger Create(Burger burgerData)
     {
-
-      var sql = @" INSERT INTO burgers
-      (id, name, description, price)
-      VALUES
-      (@Id, @Name, @Description, @Price);";
+      var sql = @"INSERT INTO burgers
+            (id, name, description, price)
+            VALUES
+            (@Id, @Name, @Description, @Price);";
       _db.Execute(sql, burgerData);
       return burgerData;
     }
@@ -23,13 +22,12 @@ namespace BurgerShack.Data
     public IEnumerable<Burger> GetAll()
     {
       return _db.Query<Burger>("SELECT * FROM burgers");
-
     }
 
     public BurgersRepository(IDbConnection db)
     {
       _db = db;
-
     }
+
   }
 }

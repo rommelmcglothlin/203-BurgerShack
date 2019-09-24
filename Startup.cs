@@ -30,6 +30,7 @@ namespace BurgerShack
     public void ConfigureServices(IServiceCollection services)
     {
       services.AddSingleton<FakeDb>();
+
       services.AddScoped<IDbConnection>(o => CreateDbConnection());
       services.AddTransient<BurgersRepository>();
       services.AddTransient<BurgersService>();
@@ -39,8 +40,8 @@ namespace BurgerShack
 
     private IDbConnection CreateDbConnection()
     {
-      var connectionString = Configuration.GetSection("Bb")
-      .GetValue<string>("gerahost");
+      var connectionString = Configuration.GetSection("db").GetValue<string>("gearhost");
+
       return new MySqlConnection(connectionString);
     }
 
