@@ -27,10 +27,10 @@ namespace BurgerShack.Controllers
     {
       try
       {
-      Burger burger = _bs.GetBurgerById(id);
-      return Ok(burger);
+        Burger burger = _bs.GetBurgerById(id);
+        return Ok(burger);
       }
-      catch(Exception e)
+      catch (Exception e)
       {
         return BadRequest(e.Message);
       }

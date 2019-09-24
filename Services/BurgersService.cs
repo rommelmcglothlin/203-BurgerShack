@@ -9,6 +9,7 @@ namespace BurgerShack.Services
   public class BurgersService
   {
     private readonly FakeDb _repo;
+    private readonly FakeDb _fakeRepo;
 
     public Burger AddBurger(Burger burgerData)
     {
@@ -33,7 +34,7 @@ namespace BurgerShack.Services
 
     public Burger GetBurgerById(string id)
     {
-      var burger = _repo.Burgers.Find(b => b.Id == id);
+      var burger = _fakeRepo.Burgers.Find(b => b.Id == id);
       if (burger == null) { throw new Exception("I DONT LIKE BAD ID's"); }
       return burger;
     }
@@ -41,17 +42,18 @@ namespace BurgerShack.Services
     public Burger DeleteBurger(string id)
     {
       var burger = GetBurgerById(id);
-      _repo.Burgers.Remove(burger);
+      _fakeRepo.Burgers.Remove(burger);
       return burger;
     }
 
     public List<Burger> GetBurgers()
     {
-      return _repo.Burgers;
+      return _repo.GetAll().List();
     }
 
-    public BurgersService(FakeDb repo)
+    public BurgersService(FakeDb fakeRepo, BurgersRepository repo)
     {
+      _fakeRepo = fakeRepo;
       _repo = repo;
     }
   }
