@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using BurgerShack.Data;
 using BurgerShack.Models;
@@ -8,31 +9,38 @@ namespace BurgerShack.Services
 {
   public class OrdersService
   {
-    private readonly FakeDb _repo;
+    private readonly FakeDb _fakeRepo;
+    private IDbConnection _repo;
+    private readonly BurgersService _bs;
 
     public List<Order> GetOrders()
     {
-      return _repo.Orders;
+      return _fakeRepo.Orders;
     }
 
     public List<Order> GetOutstandingOrders()
     {
-      return _repo.Orders.Where(o => o.OrderOut == null && !o.Canceled).ToList();
+      return _fakeRepo.Orders.Where(o => o.OrderOut == null && !o.Canceled).ToList();
     }
 
     public List<Order> GetCanceledOrders()
     {
-      return _repo.Orders.Where(o => o.Canceled).ToList();
+      return _fakeRepo.Orders.Where(o => o.Canceled).ToList();
     }
 
-    public OrdersService(FakeDb repo)
+    public OrdersService(
+      FakeDb fakeRepo,
+      IDbConnection repo,
+      BurgersService bs)
     {
+      _fakeRepo = fakeRepo;
       _repo = repo;
+      _bs = bs;
     }
 
     internal Order GetOrderById(string id)
     {
-      var order = _repo.Orders.Find(o => o.Id == id);
+      var order = _fakeRepo.Orders.Find(o => o.Id == id);
       if (order == null)
       {
         throw new Exception("Invalid Order Id");
@@ -50,17 +58,16 @@ namespace BurgerShack.Services
         switch (item.Type)
         {
           case "burger":
-            var burger = _repo.Burgers.Find(b => b.Id == item.Id);
-            if (burger == null) { throw new Exception("Unable to process the order invalid menu option"); }
+            var burger = _bs.GetBurgerById(item.Id);
             item.Price = burger.Price;
             break;
           case "side":
-            var side = _repo.Sides.Find(b => b.Id == item.Id);
+            var side = _fakeRepo.Sides.Find(b => b.Id == item.Id);
             if (side == null) { throw new Exception("Unable to process the order invalid menu option"); }
             item.Price = side.Price;
             break;
           case "drink":
-            var drink = _repo.Drinks.Find(b => b.Id == item.Id);
+            var drink = _fakeRepo.Drinks.Find(b => b.Id == item.Id);
             if (drink == null) { throw new Exception("Unable to process the order invalid menu option"); }
             item.Price = drink.Price;
             break;
@@ -70,7 +77,7 @@ namespace BurgerShack.Services
 
       });
 
-      _repo.Orders.Add(orderData);
+      _fakeRepo.Orders.Add(orderData);
       return orderData;
     }
 

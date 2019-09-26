@@ -43,7 +43,7 @@ namespace BurgerShack.Controllers
       try
       {
         Burger myBurger = _bs.AddBurger(burgerData);
-        return Ok(myBurger);
+        return Created("api/burgers/" + myBurger.Id, myBurger);
       }
       catch (Exception e)
       {

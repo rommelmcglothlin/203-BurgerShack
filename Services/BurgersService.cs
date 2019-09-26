@@ -8,12 +8,16 @@ namespace BurgerShack.Services
 {
   public class BurgersService
   {
-    private readonly FakeDb _fakeRepo;
     private BurgersRepository _repo;
 
+    /// <summary>
+    /// Creates a burger if the name is unique otherwise throws an exception
+    /// </summary>
+    /// <param name="burgerData"></param>
+    /// <returns></returns>
     public Burger AddBurger(Burger burgerData)
     {
-      var exists = _repo.GetAll().ToList().Find(b => b.Name == burgerData.Name);
+      var exists = _repo.GetBurgerByName(burgerData.Name);
       if (exists != null)
       {
         throw new Exception("This burger already exists.");
@@ -29,12 +33,25 @@ namespace BurgerShack.Services
       burger.Name = burgerData.Name;
       burger.Description = burgerData.Description;
       burger.Price = burgerData.Price;
+
+      bool success = _repo.SaveBurger(burger);
+
+      if (!success)
+      {
+        throw new Exception("Nope I couldn't update the burger.... Please Try Again Later, or now is probably fine");
+      }
+
       return burger;
     }
 
+    /// <summary>
+    /// Returns a burger by its id or throws an exception
+    /// </summary>
+    /// <param name="id"></param>
+    /// <returns></returns>
     public Burger GetBurgerById(string id)
     {
-      var burger = _fakeRepo.Burgers.Find(b => b.Id == id);
+      var burger = _repo.GetBurgerById(id);
       if (burger == null) { throw new Exception("I DONT LIKE BAD ID's"); }
       return burger;
     }
@@ -42,7 +59,13 @@ namespace BurgerShack.Services
     public Burger DeleteBurger(string id)
     {
       var burger = GetBurgerById(id);
-      _fakeRepo.Burgers.Remove(burger);
+      var deleted = _repo.DeleteBurger(id);
+
+      if (!deleted)
+      {
+        throw new Exception($"Unable to remove burger at Id {id}");
+      }
+
       return burger;
     }
 
@@ -51,9 +74,8 @@ namespace BurgerShack.Services
       return _repo.GetAll().ToList();
     }
 
-    public BurgersService(FakeDb fakeRepo, BurgersRepository repo)
+    public BurgersService(BurgersRepository repo)
     {
-      _fakeRepo = fakeRepo;
       _repo = repo;
     }
   }
