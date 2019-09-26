@@ -27,10 +27,10 @@ namespace BurgerShack.Controllers
     {
       try
       {
-      Order order = _os.GetOrderById(id);
-      return Ok(order);
+        Order order = _os.GetOrderById(id);
+        return Ok(order);
       }
-      catch(Exception e)
+      catch (Exception e)
       {
         return BadRequest(e.Message);
       }
@@ -43,7 +43,7 @@ namespace BurgerShack.Controllers
       try
       {
         Order myOrder = _os.AddOrder(orderData);
-        return Ok(myOrder);
+        return Created("api/orders/" + myOrder.Id, myOrder);
       }
       catch (Exception e)
       {
@@ -62,7 +62,6 @@ namespace BurgerShack.Controllers
       }
       catch (Exception e) { return BadRequest(e.Message); }
     }
-    
 
     [HttpPut("{id}/cancel")]
     public ActionResult<Order> CancelOrder(string id)
@@ -74,8 +73,6 @@ namespace BurgerShack.Controllers
       }
       catch (Exception e) { return BadRequest(e.Message); }
     }
-
-
 
     public OrdersController(OrdersService os)
     {
