@@ -39,6 +39,9 @@ namespace BurgerShack
       services.AddScoped<IDbConnection>(o => CreateDbConnection());
       services.AddTransient<BurgersRepository>();
       services.AddTransient<BurgersService>();
+      services.AddTransient<DrinksService>();
+      services.AddTransient<SidesService>();
+      services.AddTransient<SidesRepository>();
       services.AddTransient<OrdersService>();
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
     }

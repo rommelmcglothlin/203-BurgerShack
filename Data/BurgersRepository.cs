@@ -28,7 +28,8 @@ namespace BurgerShack.Data
 
     public Burger GetBurgerByName(string name)
     {
-      return _db.QueryFirstOrDefault<Burger>(
+      return _db.QueryFirstOrDefault<Burger>
+      (
           "SELECT * FROM burgers WHERE name = @name",
           new { name } // Dapper requires all @prop to be an actual property on an object
       );
