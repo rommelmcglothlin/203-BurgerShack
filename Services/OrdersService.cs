@@ -9,38 +9,35 @@ namespace BurgerShack.Services
 {
   public class OrdersService
   {
-    private readonly FakeDb _fakeRepo;
-    private IDbConnection _repo;
+    private OrdersRepository _repo;
     private readonly BurgersService _bs;
 
     public List<Order> GetOrders()
     {
-      return _fakeRepo.Orders;
+      return _repo.GetAll().ToList();
     }
 
     public List<Order> GetOutstandingOrders()
     {
-      return _fakeRepo.Orders.Where(o => o.OrderOut == null && !o.Canceled).ToList();
+      return GetOrders().Where(o => o.OrderOut == null && !o.Canceled).ToList();
     }
 
     public List<Order> GetCanceledOrders()
     {
-      return _fakeRepo.Orders.Where(o => o.Canceled).ToList();
+      return GetOrders().Where(o => o.Canceled).ToList();
     }
 
     public OrdersService(
-      FakeDb fakeRepo,
-      IDbConnection repo,
+      OrdersRepository repo,
       BurgersService bs)
     {
-      _fakeRepo = fakeRepo;
       _repo = repo;
       _bs = bs;
     }
 
     internal Order GetOrderById(string id)
     {
-      var order = _fakeRepo.Orders.Find(o => o.Id == id);
+      var order = _repo.GetOrderById(id);
       if (order == null)
       {
         throw new Exception("Invalid Order Id");
@@ -53,31 +50,12 @@ namespace BurgerShack.Services
       orderData.Id = Guid.NewGuid().ToString();
       orderData.OrderIn = DateTime.Now;
 
+      _repo.Create(orderData);
       orderData.Food.ForEach(item =>
       {
-        switch (item.Type)
-        {
-          case "burger":
-            var burger = _bs.GetBurgerById(item.Id);
-            item.Price = burger.Price;
-            break;
-          case "side":
-            var side = _fakeRepo.Sides.Find(b => b.Id == item.Id);
-            if (side == null) { throw new Exception("Unable to process the order invalid menu option"); }
-            item.Price = side.Price;
-            break;
-          case "drink":
-            var drink = _fakeRepo.Drinks.Find(b => b.Id == item.Id);
-            if (drink == null) { throw new Exception("Unable to process the order invalid menu option"); }
-            item.Price = drink.Price;
-            break;
-          default:
-            throw new Exception("Invalid Menu Type");
-        }
-
+        _repo.CreateOrderItem(orderData.Id,item.Id);
       });
 
-      _fakeRepo.Orders.Add(orderData);
       return orderData;
     }
 
@@ -89,6 +67,7 @@ namespace BurgerShack.Services
         throw new Exception("Order cannot be canceled after it was fullfilled");
       }
       order.Canceled = true;
+      _repo.SaveOrder(order);
       return order;
     }
 
@@ -107,6 +86,7 @@ namespace BurgerShack.Services
       }
 
       order.OrderOut = DateTime.Now;
+      _repo.SaveOrder(order);
       return order;
     }
   }
