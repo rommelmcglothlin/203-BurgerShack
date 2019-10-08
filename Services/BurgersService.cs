@@ -6,9 +6,9 @@ using BurgerShack.Models;
 
 namespace BurgerShack.Services
 {
-  public class BurgersService
+  public class ItemsService
   {
-    private BurgersRepository _repo;
+    private ItemsRepository _repo;
 
     /// <summary>
     /// Creates a burger if the name is unique otherwise throws an exception
@@ -74,7 +74,7 @@ namespace BurgerShack.Services
       return _repo.GetAll().ToList();
     }
 
-    public BurgersService(BurgersRepository repo)
+    public ItemsService(ItemsRepository repo)
     {
       _repo = repo;
     }

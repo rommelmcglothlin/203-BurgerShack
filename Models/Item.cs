@@ -11,6 +11,8 @@ namespace BurgerShack.Models
     public string Description { get; set; }
     public decimal Price { get; set; }
 
+    public string Modifications { get; set; }
+
     [Required]
     public string Type { get; set; }
   }

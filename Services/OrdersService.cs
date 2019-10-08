@@ -10,7 +10,7 @@ namespace BurgerShack.Services
   public class OrdersService
   {
     private OrdersRepository _repo;
-    private readonly BurgersService _bs;
+    private readonly ItemsService _bs;
 
     public List<Order> GetOrders()
     {
@@ -29,7 +29,7 @@ namespace BurgerShack.Services
 
     public OrdersService(
       OrdersRepository repo,
-      BurgersService bs)
+      ItemsService bs)
     {
       _repo = repo;
       _bs = bs;
