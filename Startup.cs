@@ -34,12 +34,14 @@ namespace BurgerShack
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BurgerShack", Version = "v1" });
             });
-            services.AddSingleton<FakeDb>();
-
             services.AddScoped<IDbConnection>(o => CreateDbConnection());
             
-            services.AddTransient<BurgersRepository>();
-            services.AddTransient<BurgersService>();
+            services.AddTransient<AccountRepository>();
+            services.AddTransient<AccountService>();
+            
+
+            services.AddTransient<ItemsRepository>();
+            services.AddTransient<ItemsService>();
             
             services.AddTransient<OrdersRepository>();
             services.AddTransient<OrdersService>();
