@@ -27,6 +27,7 @@ namespace BurgerShack
 
     public IConfiguration Configuration { get; }
 
+<<<<<<< HEAD
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {
@@ -37,6 +38,29 @@ namespace BurgerShack
       services.AddSingleton<FakeDb>();
 
       services.AddScoped<IDbConnection>(o => CreateDbConnection());
+=======
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "BurgerShack", Version = "v1" });
+            });
+            services.AddScoped<IDbConnection>(o => CreateDbConnection());
+            
+            services.AddTransient<AccountRepository>();
+            services.AddTransient<AccountService>();
+            
+
+            services.AddTransient<ItemsRepository>();
+            services.AddTransient<ItemsService>();
+            
+            services.AddTransient<OrdersRepository>();
+            services.AddTransient<OrdersService>();
+            
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+        }
+>>>>>>> 617ab6e9eb43efa2092f52584f4aa2681194621c
 
       services.AddTransient<BurgersRepository>();
       services.AddTransient<BurgersService>();

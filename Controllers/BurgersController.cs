@@ -12,7 +12,7 @@ namespace BurgerShack.Controllers
   [ApiController]
   public class BurgersController : ControllerBase
   {
-    private readonly BurgersService _bs;
+    private readonly ItemsService _bs;
 
     // GET api/values
     [HttpGet]
@@ -79,7 +79,7 @@ namespace BurgerShack.Controllers
       }
     }
 
-    public BurgersController(BurgersService bs)
+    public BurgersController(ItemsService bs)
     {
       _bs = bs;
     }
