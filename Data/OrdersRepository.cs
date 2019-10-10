@@ -13,9 +13,9 @@ namespace BurgerShack.Data
         public Order Create(Order orderData)
         {
             var sql = @"INSERT INTO orders
-            (id, name, orderin)
+            (id, name, orderin, userId)
             VALUES
-            (@Id, @Name, @OrderIn);";
+            (@Id, @Name, @OrderIn, @UserId);";
             var x = _db.Execute(sql, orderData);
 
             return orderData;

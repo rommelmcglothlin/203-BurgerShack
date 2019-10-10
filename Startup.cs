@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BurgerShack.Data;
 using BurgerShack.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -34,18 +35,31 @@ namespace BurgerShack
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BurgerShack", Version = "v1" });
             });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    //   options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                    //   options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
+                    options.Events.OnRedirectToLogin = (context) =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    };
+                });
+
             services.AddScoped<IDbConnection>(o => CreateDbConnection());
-            
+
             services.AddTransient<AccountRepository>();
             services.AddTransient<AccountService>();
-            
 
             services.AddTransient<ItemsRepository>();
             services.AddTransient<ItemsService>();
-            
+
             services.AddTransient<OrdersRepository>();
             services.AddTransient<OrdersService>();
-            
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -68,6 +82,8 @@ namespace BurgerShack
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseAuthentication();
 
             app.UseSwagger();
             app.UseSwaggerUI(c =>

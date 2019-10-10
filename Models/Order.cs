@@ -13,6 +13,8 @@ namespace BurgerShack.Models
 
     public decimal Total { get { return Food.Sum(i => i.Price); } }
 
+    public string UserId { get; set; }
+
     public List<Item> Food { get; set; }
     public DateTime OrderIn { get; set; }
     public DateTime? OrderOut { get; set; }

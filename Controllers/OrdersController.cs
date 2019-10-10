@@ -4,10 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using BurgerShack.Models;
 using BurgerShack.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerShack.Controllers
 {
+  [Authorize]
   [Route("api/[controller]")]
   [ApiController]
   public class OrdersController : ControllerBase
@@ -42,6 +44,7 @@ namespace BurgerShack.Controllers
     {
       try
       {
+        orderData.UserId = HttpContext.User.FindFirst("Id").Value;
         Order myOrder = _os.AddOrder(orderData);
         return Created("api/orders/" + myOrder.Id, myOrder);
       }
@@ -68,7 +71,8 @@ namespace BurgerShack.Controllers
     {
       try
       {
-        Order order = _os.CancelOrder(id);
+        var userId = HttpContext.User.FindFirst("Id").Value;
+        Order order = _os.CancelOrder(id, userId);
         return Ok(order);
       }
       catch (Exception e) { return BadRequest(e.Message); }
