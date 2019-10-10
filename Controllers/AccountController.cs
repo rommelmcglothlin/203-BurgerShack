@@ -1,6 +1,13 @@
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using BurgerShack.Exceptions;
 using BurgerShack.Models;
 using BurgerShack.Services;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using MySql.Data.MySqlClient;
 
 namespace BurgerShack.Controllers
 {
@@ -8,28 +15,44 @@ namespace BurgerShack.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-    private readonly AccountService _accountService;
+        private readonly AccountService _accountService;
 
-    [HttpPost("register")]
-        public ActionResult<User> Register([FromBody] UserRegistration creds)
+        [HttpPost("register")]
+        public async Task<ActionResult<User>> Register([FromBody] UserRegistration creds)
         {
             try
             {
                 User u = _accountService.Register(creds);
+                u.SetClaims();
+                await HttpContext.SignInAsync(u._principal);
                 return Ok(u);
+            }
+            catch (MyExceptionType e)
+            {
+                return BadRequest(e.NO);
+            }
+            catch (MySqlException e)
+            {
+                if (e.Message.Contains("email"))
+                {
+                    return BadRequest("The Email is already in use");
+                }
+                return Unauthorized("Unauthorized access to DB please contact the administrator @ a@b.com");
             }
             catch (System.Exception e)
             {
-                return BadRequest(e.Message);
+                return UnprocessableEntity(e.Message);
             }
         }
 
         [HttpPost("login")]
-        public ActionResult<User> SignIn([FromBody] UserSignIn creds)
+        public async Task<ActionResult<User>> SignIn([FromBody] UserSignIn creds)
         {
             try
             {
                 User u = _accountService.SignIn(creds);
+                u.SetClaims();
+                await HttpContext.SignInAsync(u._principal);
                 return Ok(u);
             }
             catch (System.Exception e)
@@ -38,6 +61,44 @@ namespace BurgerShack.Controllers
             }
         }
 
+        [Authorize]
+        [HttpDelete("logout")]
+        public async Task<ActionResult<bool>> Logout()
+        {
+            try
+            {
+                await HttpContext.SignOutAsync();
+                return Ok(true);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpGet("Authenticate")]
+        public ActionResult<User> Authenticate()
+        {
+            try
+            {
+                var userId = HttpContext.User.FindFirst("Id").Value;
+                var username = HttpContext.User.FindFirst(ClaimTypes.Name).Value;
+                var email = HttpContext.User.FindFirst(ClaimTypes.Email).Value;
+                var user = new User()
+                {
+                    Id = userId,
+                    Email = email,
+                    Username = username
+                };
+                return Ok(user);
+            }
+            catch (Exception e)
+            {
+                //TODO Uh-o something bad lets investigate
+                return BadRequest(e.Message);
+            }
+        }
 
         public AccountController(AccountService accountService)
         {

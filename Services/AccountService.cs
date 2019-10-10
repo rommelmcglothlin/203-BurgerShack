@@ -1,5 +1,6 @@
 using System;
 using BurgerShack.Data;
+using BurgerShack.Exceptions;
 using BurgerShack.Models;
 
 namespace BurgerShack.Services
@@ -10,11 +11,16 @@ namespace BurgerShack.Services
 
         public User Register(UserRegistration creds)
         {
+
+            if(creds.Password.Contains("password")){
+                throw new MyExceptionType("please don't use weak passwords like password or password 123");
+            }
             var user = new User();
             user.Id = Guid.NewGuid().ToString();
             user.Email = creds.Email;
             user.Username = creds.Username;
             user.Hash = BCrypt.Net.BCrypt.HashPassword(creds.Password);
+
             _repo.Register(user);
             return user;
         }

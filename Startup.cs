@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using BurgerShack.Data;
 using BurgerShack.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -46,18 +47,31 @@ namespace BurgerShack
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "BurgerShack", Version = "v1" });
             });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(options =>
+                {
+                    options.LoginPath = "/Account/Login";
+                    //   options.Cookie.SameSite = Microsoft.AspNetCore.Http.SameSiteMode.Strict;
+                    //   options.Cookie.SecurePolicy = Microsoft.AspNetCore.Http.CookieSecurePolicy.SameAsRequest;
+                    options.Events.OnRedirectToLogin = (context) =>
+                    {
+                        context.Response.StatusCode = 401;
+                        return Task.CompletedTask;
+                    };
+                });
+
             services.AddScoped<IDbConnection>(o => CreateDbConnection());
-            
+
             services.AddTransient<AccountRepository>();
             services.AddTransient<AccountService>();
-            
 
             services.AddTransient<ItemsRepository>();
             services.AddTransient<ItemsService>();
-            
+
             services.AddTransient<OrdersRepository>();
             services.AddTransient<OrdersService>();
-            
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 >>>>>>> 617ab6e9eb43efa2092f52584f4aa2681194621c
@@ -71,9 +85,19 @@ namespace BurgerShack
       services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
     }
 
+<<<<<<< HEAD
     private IDbConnection CreateDbConnection()
     {
       var connectionString = Configuration.GetSection("db").GetValue<string>("gearhost");
+=======
+            app.UseAuthentication();
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "BurgerShack");
+            });
+>>>>>>> 294f4f4416a9cdf12f3a1b136968e45b5cecc48b
 
       return new MySqlConnection(connectionString);
     }

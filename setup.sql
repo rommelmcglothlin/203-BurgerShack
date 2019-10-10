@@ -32,6 +32,10 @@
 --   orderin DATETIME NOT NULL,
 --   orderout DATETIME, 
 --   ordercanceledat DATETIME,
+--   userid VARCHAR(255) NOT NULL,
+
+--   FOREIGN KEY(userid)
+--     REFERENCES users(id),
 
 --   PRIMARY KEY(id)
   
@@ -42,11 +46,8 @@
 --   id VARCHAR(255) NOT NULL,
 --   itemid VARCHAR(255) NOT NULL,
 --   orderid VARCHAR(255) NOT NULL,
---   userid VARCHAR(255) NOT NULL,
 --   modifications VARCHAR(255),
 
---   FOREIGN KEY(userid)
---     REFERENCES users(id),
 --   FOREIGN KEY(itemid)
 --     REFERENCES items(id),
 --   FOREIGN KEY(orderid)

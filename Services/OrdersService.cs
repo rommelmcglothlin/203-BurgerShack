@@ -53,15 +53,21 @@ namespace BurgerShack.Services
       _repo.Create(orderData);
       orderData.Food.ForEach(item =>
       {
-        _repo.CreateOrderItem(orderData.Id,item.Id);
+        _repo.CreateOrderItem(orderData.Id, item.Id);
       });
 
       return orderData;
     }
 
-    internal Order CancelOrder(string id)
+    internal Order CancelOrder(string id, string userId)
     {
       var order = GetOrderById(id);
+
+      if (userId != order.UserId)
+      {
+        throw new Exception("That's not your order.... You don't even go here");
+      }
+
       if (order.OrderOut != null)
       {
         throw new Exception("Order cannot be canceled after it was fullfilled");
