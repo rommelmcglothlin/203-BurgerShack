@@ -1,7 +1,3 @@
-<<<<<<< HEAD
--- CREATE TABLE sides 
--- (
-=======
 -- CREATE TABLE users (
 --   id VARCHAR(255) NOT NULL,
 --   email VARCHAR(255) NOT NULL UNIQUE,
@@ -14,7 +10,6 @@
 --   ADD hash VARCHAR(255) NOT NULL;
 
 -- CREATE TABLE IF NOT EXISTS items (
->>>>>>> 617ab6e9eb43efa2092f52584f4aa2681194621c
 --   id VARCHAR(255) NOT NULL,
 --   name VARCHAR(255) NOT NULL,
 --   description VARCHAR(255),
