@@ -90,7 +90,9 @@ namespace BurgerShack
             {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "BurgerShack");
             });
-
+            
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             app.UseHttpsRedirection();
             app.UseMvc();
         }

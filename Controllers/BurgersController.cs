@@ -1,9 +1,13 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BurgerShack.Interfaces;
 using BurgerShack.Models;
 using BurgerShack.Services;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerShack.Controllers
@@ -62,6 +66,14 @@ namespace BurgerShack.Controllers
         return Ok(burger);
       }
       catch (Exception e) { return BadRequest(e.Message); }
+    }
+
+    [HttpPost("{id}/img")]
+    public async Task<ActionResult<string>> UploadImageAsync(string id, IFormFile file)
+    {
+      if (file == null) { return BadRequest("No File"); }
+      IItem item = await _bs.AddImage(id, file);
+      return Ok(item);
     }
 
     // DELETE api/values/5

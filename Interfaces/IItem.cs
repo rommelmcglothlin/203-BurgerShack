@@ -6,6 +6,7 @@ namespace BurgerShack.Interfaces
     string Name { get; set; }
     string Description { get; set; }
     decimal Price {get; set;}
+    string Img {get;set;}
   }
 
 

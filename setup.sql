@@ -19,6 +19,21 @@
 --   PRIMARY KEY(id)
 -- );
 
+-- CREATE PROCEDURE get_users()
+-- BEGIN
+--   SELECT * FROM users;
+-- END
+-- CALL get_users();
+
+-- DROP PROCEDURE create_user;
+-- CREATE PROCEDURE create_user(id varchar(255), email varchar(255), username varchar(255))
+-- BEGIN
+--   INSERT INTO users (id, email, username, hash) VALUES(id, email, username, "password");
+-- END;
+
+-- CALL create_user("1", "t@test.com", "TESTERMCTEST");
+
+
 -- CREATE TABLE orders
 -- (
 --   id VARCHAR(255) NOT NULL,
@@ -49,4 +64,20 @@
 --     REFERENCES orders(id),
 --   PRIMARY KEY(id)
 -- );
+
+
+-- CREATE PROCEDURE CreateItem(id VARCHAR(255), name VARCHAR(255), type VARCHAR(255))
+-- BEGIN
+--   INSERT INTO items (id, name, type) VALUES (id, name, type);
+-- END;
+
+-- CALL CreateItem("item-2", "Small Kahuna", "burger");
+-- CALL CreateItem("item-3", "Bacon Bacon", "burger");
+-- CALL CreateItem("item-4", "Coke", "drink");
+-- CALL CreateItem("item-5", "Cheesy Bacon Fries", "side");
+
+-- ALTER TABLE items
+--   ADD COLUMN img VARCHAR(255);
+
+
 
