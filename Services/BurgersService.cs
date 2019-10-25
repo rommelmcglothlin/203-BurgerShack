@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using BurgerShack.Data;
+using BurgerShack.Interfaces;
 using BurgerShack.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace BurgerShack.Services
 {
@@ -72,6 +76,32 @@ namespace BurgerShack.Services
     public List<Burger> GetBurgers()
     {
       return _repo.GetAll().ToList();
+    }
+
+    internal async Task<IItem> AddImage(string id, IFormFile file)
+    {
+      var item = GetBurgerById(id);
+      var photoName = item.Name + file.FileName.Substring(file.FileName.LastIndexOf("."));
+      var img = await WriteToFile("wwwroot/images", photoName, file);
+      item.Img = img;
+      _repo.SaveBurger(item);
+      return item;
+    }
+
+    public async Task<string> WriteToFile(string path, string FileName, IFormFile file)
+    {
+
+      if (!Directory.Exists(path))
+      {
+        Directory.CreateDirectory(path);
+      }
+
+      var filePath = Path.Combine(path, FileName);
+      using(var fileStream = new FileStream(filePath, FileMode.Create))
+      {
+        await file.CopyToAsync(fileStream);
+        return "images/"+FileName;
+      }
     }
 
     public ItemsService(ItemsRepository repo)

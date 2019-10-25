@@ -48,8 +48,9 @@ namespace BurgerShack.Data
                 UPDATE items SET
                 name = @Name,
                 description = @Description,
-                price = @Price
-                WHERE id = @Id
+                price = @Price,
+                img = @Img
+                WHERE id = @Id;
                 ", burger);
       return nRows == 1;
     }

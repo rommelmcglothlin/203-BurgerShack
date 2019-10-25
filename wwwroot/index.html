@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Uploads</title>
+</head>
+
+<body>
+
+
+  <form onsubmit="sendPhoto(event)">
+    <input type="file" name="img">
+    <button type="submit">SEND</button>
+  </form>
+
+
+  <script>
+    async function sendPhoto(event) {
+      event.preventDefault();
+
+      debugger
+      let res = await fetch("/api/burgers/123/img", {
+        method: 'POST',
+        data: JSON.stringify({ file: event.target.img.files[0] })
+      })
+      let data = res.json()
+    }
+  </script>
+
+</body>
+
+</html>
