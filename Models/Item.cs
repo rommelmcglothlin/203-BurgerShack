@@ -17,4 +17,12 @@ namespace BurgerShack.Models
     public string Type { get; set; }
   }
 
+  public class THISTHATRELATIONSHIP
+  {
+    public string Id { get; set; }
+    public string THISID { get; set; }
+    public string THATID { get; set; }
+    public string Action { get; set; }
+  }
+
 }
